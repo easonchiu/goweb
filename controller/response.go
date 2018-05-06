@@ -11,11 +11,18 @@ type Response struct {
 
 // success
 func (r *Response) Success(data gin.H) {
-	r.Ctx.JSON(http.StatusOK, gin.H{
+	respH := gin.H{
 		"msg": "ok",
 		"code": 0,
-		"data": data,
-	})
+	}
+
+	if len(data) == 1 && data["data"] != nil {
+		respH["data"] = data["data"]
+	} else {
+		respH["data"] = data
+	}
+
+	r.Ctx.JSON(http.StatusOK, respH)
 }
 
 // error
