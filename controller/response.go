@@ -16,10 +16,10 @@ func (r *Response) Success(data gin.H) {
 		"code": 0,
 	}
 
-	if len(data) == 1 && data["data"] != nil {
-		respH["data"] = data["data"]
-	} else {
+	if len(data) > 1 {
 		respH["data"] = data
+	} else {
+		respH["data"] = data["data"]
 	}
 
 	r.Ctx.JSON(http.StatusOK, respH)
