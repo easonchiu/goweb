@@ -7,12 +7,30 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func GetUserInfoById(id string) (gin.H, error) {
+func GetUserInfoById(id bson.ObjectId) (gin.H, error) {
+	db, close := db.MuseDB()
+	defer close()
 
-	mongo := db.MuseDB()
+	data := model.User{}
 
-	data := []model.User{}
-	err := mongo.C(model.UserCollection).Find(bson.M{}).All(&data)
+	err := db.C(model.UserCollection).FindId(id).One(&data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return gin.H{
+		"data": data,
+	}, nil
+}
+
+func GetUsersList(skip int, limit int) (gin.H, error) {
+	db, close := db.MuseDB()
+	defer close()
+
+	data := make([]model.User, limit)
+
+	err := db.C(model.UserCollection).Find(bson.M{}).Skip(skip).Limit(limit).All(&data)
 
 	if err != nil {
 		return nil, err

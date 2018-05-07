@@ -32,10 +32,15 @@ func ConnectDB () {
 	Connecting = true
 }
 
-// get database
-func MuseDB() *mgo.Database {
+// get clone session
+// must close the session after use !!!  e.g:  defer session.close()
+func MuseDB() (*mgo.Database, func()) {
 	if Connecting {
-		return Session.DB(Mongo.Database)
+		session := Session.Clone()
+		closeFn := func() {
+			session.Close()
+		}
+		return session.DB(Mongo.Database), closeFn
 	}
 	panic(errors.New("Database is not connected."))
 }

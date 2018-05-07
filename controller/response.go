@@ -9,14 +9,14 @@ type Response struct {
 	Ctx *gin.Context
 }
 
-// success
+// success handle
 func (r *Response) Success(data gin.H) {
 	respH := gin.H{
 		"msg": "ok",
 		"code": 0,
 	}
 
-	if len(data) > 1 {
+	if len(data) > 1 { // Almost the length is more than 1, so just check it first.
 		respH["data"] = data
 	} else if data["data"] != nil {
 		respH["data"] = data["data"]
@@ -27,7 +27,7 @@ func (r *Response) Success(data gin.H) {
 	r.Ctx.JSON(http.StatusOK, respH)
 }
 
-// error
+// error handle
 func (r *Response) Error(err error) {
 	r.Ctx.JSON(http.StatusOK, gin.H{
 		"msg": "error",
@@ -36,7 +36,7 @@ func (r *Response) Error(err error) {
 	})
 }
 
-// forbidden
+// forbidden handle
 func (r *Response) Forbidden() {
 	r.Ctx.JSON(http.StatusForbidden, gin.H{
 		"msg": "forbidden",
