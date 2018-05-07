@@ -5,7 +5,6 @@ import (
 	"web/service"
 	"gopkg.in/mgo.v2/bson"
 	"strconv"
-	"fmt"
 )
 
 func GetUsersList(c *gin.Context) {
@@ -25,8 +24,6 @@ func GetUsersList(c *gin.Context) {
 	if err != nil {
 		intLimit = 10
 	}
-
-	fmt.Println(intSkip, intLimit)
 
 	userInfo, err := service.GetUsersList(intSkip, intLimit)
 	if err != nil {
