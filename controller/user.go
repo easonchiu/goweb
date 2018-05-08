@@ -8,7 +8,7 @@ import (
 )
 
 func GetUsersList(c *gin.Context) {
-	resp := Response{c}
+	ctx := CreateCtx(c)
 
 	skip, _ := c.GetQuery("skip")
 	limit, _  := c.GetQuery("limit")
@@ -27,23 +27,23 @@ func GetUsersList(c *gin.Context) {
 
 	userInfo, err := service.GetUsersList(intSkip, intLimit)
 	if err != nil {
-		resp.Error(err)
+		ctx.Error(err)
 		return
 	}
 
-	resp.Success(userInfo)
+	ctx.Success(userInfo)
 }
 
 func GetUserInfo(c *gin.Context) {
-	resp := Response{c}
+	ctx := CreateCtx(c)
 
-	id := c.Params.ByName("id")
+	id := ctx.getParam("id")
 
 	userInfo, err := service.GetUserInfoById(bson.ObjectIdHex(id))
 	if err != nil {
-		resp.Error(err)
+		ctx.Error(err)
 		return
 	}
 
-	resp.Success(userInfo)
+	ctx.Success(userInfo)
 }

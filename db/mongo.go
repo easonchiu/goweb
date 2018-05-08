@@ -4,6 +4,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"fmt"
 	"errors"
+	"net/http"
 )
 
 var (
@@ -32,17 +33,18 @@ func ConnectDB () {
 	Connecting = true
 }
 
-// get clone session
+// get db with clone session
 // must close the session after use !!!  e.g:  defer session.close()
-func MuseDB() (*mgo.Database, func()) {
+func CloneDB() (*mgo.Database, func(), error) {
 	if Connecting {
 		session := Session.Clone()
 		closeFn := func() {
 			session.Close()
 		}
-		return session.DB(Mongo.Database), closeFn
+		return session.DB(Mongo.Database), closeFn, nil
 	}
-	panic(errors.New("Database is not connected."))
+
+	return nil, nil, errors.New(http.StatusText(http.StatusBadGateway))
 }
 
 // close db

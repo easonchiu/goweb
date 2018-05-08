@@ -22,8 +22,8 @@ func Jwt(c *gin.Context) {
 
 		c.Next()
 	} else {
-		resp := controller.Response{c}
-		resp.Forbidden()
+		ctx := controller.CreateCtx(c)
+		ctx.Forbidden()
 	}
 }
 
