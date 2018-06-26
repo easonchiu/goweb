@@ -1,34 +1,45 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"fmt"
-	"web/controller"
+  `fmt`
+  `regexp`
+  `web/controller`
+
+  `github.com/gin-gonic/gin`
+  `gopkg.in/mgo.v2/bson`
 )
 
 func Register(g *gin.Engine) {
-	// g.Use(log)
+  // g.Use(log)
 }
 
 // check up json web token
 func Jwt(c *gin.Context) {
-	auth, prefix, token := c.Request.Header.Get("authorization"), "Bearer ", ""
+  auth, token := c.Request.Header.Get("authorization"), ""
 
-	if len(auth) > len(prefix) {
-		token = auth[len(prefix):]
+  jwtReg := regexp.MustCompile(`^Bearer\s\S+$`)
 
-		fmt.Println(token)
-		// check up your token here...
+  if jwtReg.MatchString(auth) {
+    token = auth[len("Bearer "):]
 
-		c.Next()
-	} else {
-		ctx := controller.CreateCtx(c)
-		ctx.Forbidden()
-	}
+    // check up your token here...
+    if bson.IsObjectIdHex(token) {
+      c.Set("uid", token)
+      c.Next()
+    } else {
+      ctx := controller.CreateCtx(c)
+      ctx.Error("无效用户", 401)
+      c.Abort()
+    }
+  } else {
+    ctx := controller.CreateCtx(c)
+    ctx.Forbidden()
+    c.Abort()
+  }
 }
 
 // print user agent
 func log(c *gin.Context) {
-	fmt.Println(" >>> UserAgent is: ", c.Request.UserAgent())
-	c.Next()
+  fmt.Println(" >>> UserAgent is: ", c.Request.UserAgent())
+  c.Next()
 }

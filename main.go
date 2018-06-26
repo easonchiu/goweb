@@ -1,45 +1,44 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"web/middleware"
-	"web/router"
-	"web/db"
-	"os"
+  `flag`
+  `web/db`
+  `web/middleware`
+  `web/router`
+
+  `github.com/gin-gonic/gin`
 )
 
 func init() {
-	db.ConnectDB()
+  db.ConnectDB()
 }
 
 func main() {
 
-	// close db before unmount
-	defer db.CloseDB()
+  // close db before unmount
+  defer db.CloseDB()
 
-	// initialization
-	// Default With the Logger and Recovery middleware already attached
-	g := gin.Default() // gin.New()
+  // initialization
+  // Default With the Logger and Recovery middleware already attached
+  g := gin.Default() // gin.New()
 
-	// register middleware
-	middleware.Register(g)
+  // register middleware
+  middleware.Register(g)
 
-	// register router
-	router.Register(g)
+  // register router
+  router.Register(g)
 
-	// get port args
-	port := ""
-	if len(os.Args) >= 2 {
-		port = os.Args[1]
-	}
-	if port == "" {
-		port = ":8080"
-	} else {
-		port = ":" + port
-	}
+  // get port args
+  // e.g.  go run main.go --port=8080
+  port := ""
+  flag.StringVar(&port, "port", "8080", "port addr")
+  flag.Parse()
 
-	// start
-	g.Run(port)
+  // start
+  g.Run(":" + port)
+
+  // 启动之后浏览器访问
+  // http://localhost:8080/demo?foo=1&bar=2
+  // 就可以存一条数据至mongodb
 
 }
-
