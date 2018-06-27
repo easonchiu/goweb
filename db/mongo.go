@@ -4,7 +4,7 @@ import (
   `errors`
   `fmt`
   `net/http`
-  `web/conf`
+  "web/conf"
 
   `gopkg.in/mgo.v2`
 )
@@ -16,9 +16,11 @@ var (
 )
 
 func ConnectDB() {
-  mongo, err := mgo.ParseURL(conf.DBUrl)
+  config := conf.GetConf()
 
-  s, err := mgo.Dial(conf.DBUrl)
+  mongo, err := mgo.ParseURL(config.DBUrl)
+
+  s, err := mgo.Dial(config.DBUrl)
 
   if err != nil {
     panic(err)
