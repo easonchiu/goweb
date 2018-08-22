@@ -13,8 +13,13 @@ func Get(ctx *context.New) {
 
   foo := ctx.GetQueryDefault("foo", "default foo")
 
+  // 创建数据
+  data := model.DemoModel{
+    Foo: foo,
+  }
+
   // 存储数据
-  err := service.Insert(ctx, foo)
+  err := service.Insert(ctx, data)
 
   // 如果有报错
   if err != nil {

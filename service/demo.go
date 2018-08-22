@@ -11,14 +11,7 @@ import (
 )
 
 // demo server
-func Insert(ctx *context.New, foo string) (error) {
-
-  // 创建数据
-  data := model.DemoModel{
-    Id:  bson.NewObjectId(),
-    Foo: foo,
-  }
-
+func Insert(ctx *context.New, data model.DemoModel) error {
   // 存
   err := ctx.MgoDB.C(model.DemoCollection).Insert(data)
 

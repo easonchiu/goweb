@@ -15,5 +15,4 @@ func registerDemoRouter(g *gin.RouterGroup) {
   g.POST("", /*middleware.Jwt,*/ context.CreateCtx(controller.Post))
 
   g.PUT("", /*middleware.Jwt,*/ context.CreateCtx(controller.Put))
-
 }
