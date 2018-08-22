@@ -4,12 +4,20 @@ import (
   "gopkg.in/mgo.v2/bson"
 )
 
-// collection name
+// 文档名
 const DemoCollection = "demos"
 
-// collection model
+// 文档的字段结构
 type DemoModel struct {
-  Id  bson.ObjectId `json:"id" bson:"_id"`
-  Foo string        `json:"foo"`
-  Bar string        `json:"bar"`
+  Id  bson.ObjectId `bson:"_id,omitempty"` // id自动生成
+  Foo string        `bson:"foo"`
+}
+
+// 实现接口
+func (d DemoModel) GetMap() bson.M {
+  return bson.M{
+    "id":  d.Id,
+    "foo": d.Foo,
+    "len": len(d.Foo),
+  }
 }

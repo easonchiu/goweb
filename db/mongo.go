@@ -1,12 +1,12 @@
 package db
 
 import (
-  `errors`
-  `fmt`
-  `net/http`
+  "errors"
+  "net/http"
   "web/conf"
+  "web/util"
 
-  `gopkg.in/mgo.v2`
+  "gopkg.in/mgo.v2"
 )
 
 var (
@@ -15,12 +15,10 @@ var (
   Connecting = false
 )
 
-func ConnectDB() {
-  config := conf.GetConf()
+func ConnectMgoDB() {
+  mongo, err := mgo.ParseURL(conf.MgoDBUrl)
 
-  mongo, err := mgo.ParseURL(config.DBUrl)
-
-  s, err := mgo.Dial(config.DBUrl)
+  s, err := mgo.Dial(conf.MgoDBUrl)
 
   if err != nil {
     panic(err)
@@ -28,17 +26,17 @@ func ConnectDB() {
 
   s.SetSafe(&mgo.Safe{})
 
-  fmt.Println("Connect database successed.")
+  util.Println("Connect database successed.")
 
   Session = s
   Mongo = mongo
   Connecting = true
 }
 
-// get db with clone session
-// must close the session after use !!!
+// 克隆一个mongodb的session
+// 使用完成后需要关闭session
 //   e.g.  defer session.close()
-func CloneDB() (*mgo.Database, func(), error) {
+func CloneMgoDB() (*mgo.Database, func(), error) {
   if Connecting {
     session := Session.Clone()
     closeFn := func() {
@@ -50,12 +48,12 @@ func CloneDB() (*mgo.Database, func(), error) {
   return nil, nil, errors.New(http.StatusText(http.StatusBadGateway))
 }
 
-// close db
-func CloseDB() {
+// 关闭mongodb数据库
+func CloseMgoDB() {
   if Connecting {
     Session.Close()
     Connecting = false
-    fmt.Println("Database is closed.")
+    util.Println("Database is closed.")
   } else {
     panic(errors.New("Database is not connected."))
   }

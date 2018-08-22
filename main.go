@@ -1,44 +1,37 @@
 package main
 
 import (
-  `flag`
-  `web/db`
-  `web/middleware`
-  `web/router`
+  "flag"
+  "web/db"
+  "web/router"
 
-  `github.com/gin-gonic/gin`
+  "github.com/gin-gonic/gin"
 )
 
 func init() {
-  db.ConnectDB()
+  db.ConnectMgoDB()
+  db.InitRedisPool()
 }
 
 func main() {
 
-  // close db before unmount
-  defer db.CloseDB()
+  // 退出时关闭数据库连接
+  defer db.CloseMgoDB()
+  defer db.RedisPool.Close()
 
-  // initialization
+  // 初始化gin框架
   // Default With the Logger and Recovery middleware already attached
   g := gin.Default() // gin.New()
 
-  // register middleware
-  middleware.Register(g)
-
-  // register router
+  // 注册路由
   router.Register(g)
 
-  // get port args
+  // 获取端口号
   // e.g.  go run main.go --port=8080
   port := ""
   flag.StringVar(&port, "port", "8080", "port addr")
   flag.Parse()
 
-  // start
+  // 启动
   g.Run(":" + port)
-
-  // 启动之后浏览器访问
-  // http://localhost:8080/demo?foo=1&bar=2
-  // 就可以存一条数据至mongodb
-
 }
