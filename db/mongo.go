@@ -16,9 +16,13 @@ var (
 )
 
 func ConnectMgoDB() {
-  mongo, err := mgo.ParseURL(conf.MgoDBUrl)
+  if conf.MongodbDisabled {
+    return
+  }
 
-  s, err := mgo.Dial(conf.MgoDBUrl)
+  mongo, err := mgo.ParseURL(conf.MongodbUrl)
+
+  s, err := mgo.Dial(conf.MongodbUrl)
 
   if err != nil {
     panic(err)
@@ -37,6 +41,10 @@ func ConnectMgoDB() {
 // 使用完成后需要关闭session
 //   e.g.  defer session.close()
 func CloneMgoDB() (*mgo.Database, func(), error) {
+  if conf.MongodbDisabled {
+    return nil, nil, nil
+  }
+
   if Connecting {
     session := Session.Clone()
     closeFn := func() {
@@ -50,6 +58,10 @@ func CloneMgoDB() (*mgo.Database, func(), error) {
 
 // 关闭mongodb数据库
 func CloseMgoDB() {
+  if conf.MongodbDisabled {
+    return
+  }
+
   if Connecting {
     Session.Close()
     Connecting = false

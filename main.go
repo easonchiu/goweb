@@ -17,9 +17,11 @@ func main() {
 
   // 退出时关闭数据库连接
   defer db.CloseMgoDB()
-  defer db.RedisPool.Close()
+  defer db.CloseRedisPool()
 
   // 初始化gin框架
+  gin.SetMode(gin.DebugMode)
+
   // Default With the Logger and Recovery middleware already attached
   g := gin.Default() // gin.New()
 
@@ -27,9 +29,9 @@ func main() {
   router.Register(g)
 
   // 获取端口号
-  // e.g.  go run main.go --port=8080
+  // e.g.  go run main.go --port=9090
   port := ""
-  flag.StringVar(&port, "port", "8080", "port addr")
+  flag.StringVar(&port, "port", "9090", "port addr")
   flag.Parse()
 
   // 启动

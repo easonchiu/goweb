@@ -11,7 +11,7 @@ import (
 type Stack []error
 
 // 根据错误码换取错误信息
-func Get(no interface{}) errType {
+func Get(no interface{}) *errType {
   errStrNo := ""
 
   switch no.(type) {
@@ -24,13 +24,13 @@ func Get(no interface{}) errType {
   if errStrNo != "" && Error[errStrNo].Message != "" {
     err := Error[errStrNo]
     err.Code = errStrNo
-    return err
+    return &err
   }
 
   err := Error[ErrServerError]
   err.Code = ErrServerError
 
-  return err
+  return &err
 }
 
 // 创建

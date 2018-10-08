@@ -50,15 +50,20 @@ func CreateCtx(fn func(*New)) func(*gin.Context) {
 // 创建上下文，连接mgo与redis数据库
 func NewCtx(c *gin.Context) (*New, error) {
   bytes, _ := c.GetRawData()
+
   mg, closer, err := db.CloneMgoDB()
   if err != nil {
     util.Println("[MGO] 😈 Error")
     return nil, err
   }
-  util.Println("[MGO] 😄 OK")
+  if mg != nil {
+    util.Println("[MGO] 😄 OK")
+  }
 
-  rds := db.RedisPool.Get()
-  util.Println("[RDS] 😄 OK")
+  rds := db.GetRedis()
+  if rds != nil {
+    util.Println("[RDS] 😄 OK")
+  }
 
   return &New{
     c,
@@ -82,10 +87,14 @@ func NewBaseCtx(c *gin.Context) *New {
 
 // 关闭数据库连接
 func (c *New) Close() {
-  c.MgoDBCloser()
-  util.Println("[MGO] 👋 CLOSED")
-  c.Redis.Close()
-  util.Println("[RDS] 👋 CLOSED")
+  if c.MgoDBCloser != nil {
+    c.MgoDBCloser()
+    util.Println("[MGO] 👋 CLOSED")
+  }
+  if c.Redis != nil {
+    c.Redis.Close()
+    util.Println("[RDS] 👋 CLOSED")
+  }
 }
 
 // 成功处理

@@ -14,7 +14,7 @@ type DemoModel struct {
 }
 
 // 实现接口
-func (d DemoModel) GetMap() bson.M {
+func (d DemoModel) Parse() bson.M {
   return bson.M{
     "id":  d.Id,
     "foo": d.Foo,
