@@ -13,7 +13,7 @@ var (
 
 // 初始化redis连接池
 func InitRedisPool() {
-  if conf.RedisDisabled {
+  if !conf.UseRedis {
     return
   }
 
@@ -22,7 +22,8 @@ func InitRedisPool() {
       MaxIdle:     3,
       IdleTimeout: 240 * time.Second,
       Dial: func() (redis.Conn, error) {
-        return redis.Dial("tcp", conf.RedisdbUrl)
+        conn, err := redis.Dial("tcp", conf.GetRedisdbUrl())
+        return conn, err
       },
     }
   }
@@ -35,7 +36,7 @@ func CloseRedisPool() {
 }
 
 func GetRedis() redis.Conn {
-  if conf.RedisDisabled {
+  if !conf.UseRedis {
     return nil
   }
   return RedisPool.Get()

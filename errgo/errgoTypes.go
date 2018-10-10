@@ -15,6 +15,7 @@ const (
   ErrSkipRange  = "200001"
   ErrLimitRange = "200002"
   ErrForbidden  = "200003"
+  ErrNeedLogin  = "200008"
 
   // 默认错误
   ErrServerError = "999999"
@@ -25,7 +26,8 @@ var Error = map[string]errType{
   ErrIdError:    {"非法的id", http.StatusOK, ""},
   ErrSkipRange:  {"skip取值范围错误", http.StatusInternalServerError, ""},
   ErrLimitRange: {"limit取值范围错误", http.StatusInternalServerError, ""},
+  ErrForbidden:  {"权限不足", http.StatusForbidden, ""},
+  ErrNeedLogin:  {"请重新登录", http.StatusForbidden, ""},
 
-  ErrForbidden:   {"权限不足", http.StatusForbidden, ""},
   ErrServerError: {"系统错误", http.StatusInternalServerError, ""},
 }

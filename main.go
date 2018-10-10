@@ -2,13 +2,20 @@ package main
 
 import (
   "flag"
+  "web/conf"
   "web/db"
   "web/router"
 
   "github.com/gin-gonic/gin"
+  "github.com/zouyx/agollo"
 )
 
 func init() {
+  // 连接apollo
+  agollo.InitCustomConfig(conf.GetApolloConfig)
+  agollo.Start()
+
+  // 连接数据库
   db.ConnectMgoDB()
   db.InitRedisPool()
 }

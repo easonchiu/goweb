@@ -19,9 +19,9 @@ type New struct {
   Ctx         *gin.Context
   RawData     []byte
   MgoDB       *mgo.Database
-  MgoDBCloser func()
   Redis       redis.Conn
   Errgo       *errgo.Stack
+  mgoDBCloser func()
 }
 
 func CreateCtx(fn func(*New)) func(*gin.Context) {
@@ -87,8 +87,8 @@ func NewBaseCtx(c *gin.Context) *New {
 
 // 关闭数据库连接
 func (c *New) Close() {
-  if c.MgoDBCloser != nil {
-    c.MgoDBCloser()
+  if c.mgoDBCloser != nil {
+    c.mgoDBCloser()
     util.Println("[MGO] 👋 CLOSED")
   }
   if c.Redis != nil {
