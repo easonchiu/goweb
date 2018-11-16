@@ -21,7 +21,6 @@ func init() {
 }
 
 func main() {
-
   // 退出时关闭数据库连接
   defer db.CloseMgoDB()
   defer db.CloseRedisPool()
@@ -43,4 +42,5 @@ func main() {
 
   // 启动
   g.Run(":" + port)
+
 }

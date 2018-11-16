@@ -38,94 +38,69 @@ func Create() *Stack {
   return new(Stack)
 }
 
-// 判断int是否小于一个值
-func (s *Stack) ErrorIfIntLessThen(val int, min int, errNo string) error {
-  if val < min {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
+// 判断bool返回值
+func (s *Stack) True(bool bool, errNo string) error {
+  if bool {
+    return s.Error(errNo)
   }
   return nil
+}
+
+// 判断func返回值
+func (s *Stack) FuncTrue(fn func() bool, errNo string) error {
+  return s.True(fn(), errNo)
+}
+
+// 判断int是否小于一个值
+func (s *Stack) IntLessThen(val int, min int, errNo string) error {
+  return s.True(val < min, errNo)
 }
 
 // 判断int是否大于一个值
-func (s *Stack) ErrorIfIntMoreThen(val int, max int, errNo string) error {
-  if val > max {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) IntMoreThen(val int, max int, errNo string) error {
+  return s.True(val > max, errNo)
 }
 
-// 判断一个值是否为objectId
-func (s *Stack) ErrorIfStringNotObjectId(id string, errNo string) error {
-  if !bson.IsObjectIdHex(id) {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+// 判断一个值是否为objectId(用mongodb时会用到)
+func (s *Stack) StringNotObjectId(id string, errNo string) error {
+  return s.True(!bson.IsObjectIdHex(id), errNo)
 }
 
 // 判断字符串是否为空
-func (s *Stack) ErrorIfStringIsEmpty(str string, errNo string) error {
-  if str == "" {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) StringIsEmpty(str string, errNo string) error {
+  return s.True(str == "", errNo)
 }
 
 // 判断int是否为0
-func (s *Stack) ErrorIfIntIsZero(val int, errNo string) error {
-  if val == 0 {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) IntIsZero(val int, errNo string) error {
+  return s.True(val == 0, errNo)
 }
 
 // 判断length是否小于
-func (s *Stack) ErrorIfLenLessThen(str string, length int, errNo string) error {
-  if len([]rune(str)) < length {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) LenLessThen(str string, length int, errNo string) error {
+  return s.True(len([]rune(str)) < length, errNo)
 }
 
 // 判断length是否大于
-func (s *Stack) ErrorIfLenMoreThen(str string, length int, errNo string) error {
-  if len([]rune(str)) > length {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) LenMoreThen(str string, length int, errNo string) error {
+  return s.True(len([]rune(str)) > length, errNo)
 }
 
 // 判断时间是否早于
-func (s *Stack) ErrorIfTimeEarlierThen(t time.Time, t2 time.Time, errNo string) error {
-  if t.Before(t2) == true {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) TimeEarlierThen(t time.Time, t2 time.Time, errNo string) error {
+  return s.True(t.Before(t2), errNo)
 }
 
 // 判断时间是否晚于
-func (s *Stack) ErrorIfTimeLaterThen(t time.Time, t2 time.Time, errNo string) error {
-  if t.After(t2) == true {
-    err := errors.New(errNo)
-    *s = append(*s, err)
-    return err
-  }
-  return nil
+func (s *Stack) TimeLaterThen(t time.Time, t2 time.Time, errNo string) error {
+  return s.True(t.After(t2), errNo)
+}
+
+// 添加一个错误进栈
+func (s *Stack) Error(errNo string) error {
+  err := errors.New(errNo)
+  *s = append(*s, err)
+  return err
 }
 
 // 清空错误栈

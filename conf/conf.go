@@ -5,8 +5,9 @@ import (
 )
 
 const (
-  UseMongodb = true // 使用mongodb
-  UseRedis   = true // 使用redis
+  UseMongodb = true  // 使用mongodb
+  UseRedis   = true  // 使用redis
+  UseMySql   = false // 使用mysql (未实现)
 )
 
 // 获取mongodb数据库地址

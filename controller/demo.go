@@ -1,12 +1,12 @@
 package controller
 
 import (
-  "web/context"
+  "web/ctx"
 
   "github.com/gin-gonic/gin"
 )
 
-func Get(ctx *context.New) {
+func Get(ctx *ctx.New) {
   ctx.Success(gin.H{
     "data": "OK",
   })

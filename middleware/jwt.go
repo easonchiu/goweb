@@ -3,8 +3,9 @@ package middleware
 import (
   "regexp"
   "web/conf"
-  "web/context"
+  "web/ctx"
   "web/errgo"
+  "workerbook/context"
 
   "github.com/dgrijalva/jwt-go"
   "github.com/gin-gonic/gin"
@@ -26,13 +27,13 @@ func Jwt(c *gin.Context) {
     if token.Valid {
       c.Next()
     } else {
-      ctx := context.NewBaseCtx(c)
-      ctx.Error(errgo.ErrNeedLogin)
+      bctx := ctx.NewBaseCtx(c)
+      bctx.Error(errgo.ErrNeedLogin)
       c.Abort()
     }
   } else {
-    ctx := context.NewBaseCtx(c)
-    ctx.Error(errgo.ErrNeedLogin)
+    bctx := context.NewBaseCtx(c)
+    bctx.Error(errgo.ErrNeedLogin)
     c.Abort()
   }
 }

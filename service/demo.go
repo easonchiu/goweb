@@ -2,7 +2,7 @@ package service
 
 import (
   "errors"
-  "web/context"
+  "web/ctx"
   "web/errgo"
   "web/model"
   "web/util"
@@ -11,7 +11,18 @@ import (
 )
 
 // demo server
-func Insert(ctx *context.New, data model.DemoModel) error {
+func Insert(ctx *ctx.New, data model.DemoModel) error {
+  // 验证字段
+  ctx.Errgo.StringIsEmpty(data.Foo, errgo.ErrForbidden)
+  ctx.Errgo.IntLessThen(data.Bar, 0, errgo.ErrSkipRange)
+  ctx.Errgo.IntLessThen(data.Bar, 1, errgo.ErrLimitRange)
+  ctx.Errgo.IntMoreThen(data.Bar, 50, errgo.ErrLimitRange)
+
+  // 字段有误则返回
+  if err := ctx.Errgo.PopError(); err != nil {
+    return err
+  }
+
   // 存
   err := ctx.MgoDB.C(model.DemoCollection).Insert(data)
 
@@ -22,7 +33,7 @@ func Insert(ctx *context.New, data model.DemoModel) error {
   return nil
 }
 
-func Update(ctx *context.New, id string, data bson.M) error {
+func Update(ctx *ctx.New, id string, data bson.M) error {
   // 限制更新的字段及类型
   util.Only(
     data,
@@ -32,7 +43,7 @@ func Update(ctx *context.New, id string, data bson.M) error {
   )
 
   // 验证id
-  ctx.Errgo.ErrorIfStringNotObjectId(id, errgo.ErrIdError)
+  ctx.Errgo.StringNotObjectId(id, errgo.ErrIdError)
 
   if err := ctx.Errgo.PopError(); err != nil {
     return err

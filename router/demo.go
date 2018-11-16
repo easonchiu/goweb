@@ -1,8 +1,8 @@
 package router
 
 import (
-  "web/context"
   "web/controller"
+  "web/ctx"
 
   "github.com/gin-gonic/gin"
 )
@@ -10,6 +10,6 @@ import (
 func registerDemoRouter(g *gin.RouterGroup) {
 
   // 这是一个测试请求
-  g.GET("", /*middleware.Jwt,*/ context.CreateCtx(controller.Get))
+  g.GET("", /*middleware.Jwt,*/ ctx.CreateCtx(controller.Get))
 
 }
